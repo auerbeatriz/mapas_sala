@@ -2,7 +2,7 @@
 //configiração de acesso ao banco de dados
 
 $servername = "localhost";
-$dbname = "horario";
+$dbname = "sistecar_db";
 $username = "root";
 $password = "usbw";
 

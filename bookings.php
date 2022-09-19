@@ -10,30 +10,32 @@ require_once("post.php");
 
 $post = new Post($con);
 
+$room = $_GET["room"];
+$location = $_GET["location"];
+
 //array responsavel pela resposta Json
 $response = array();
 
 //obtendo os dados do banco
-$agendamentos = $post->getBookings();
-$numRows =  mysqli_num_rows( $agendamentos );
+$bookings = $post->getBookings($room, $location);
+$numRows =  mysqli_num_rows( $bookings );
 
 if( $numRows > 0) {
     /*se a consulta aconteceu*/
 
     $response["success"] = 1;
-    $response["agendamentos"] = array();
+    $response["data"] = array();
 
     //coloca os dados obtidos no array de resposta
-    while( $row = mysqli_fetch_assoc($agendamentos) ) {
-        $agendamento = array(
-            "professor" => $row["professor"],
-            "turma" => $row["turma"],
-            "horario" => $row["horario"],
-            "dia_semana" => $row["dia_semana"],
-            "disciplina" => $row["disciplina"]
+    while( $row = mysqli_fetch_assoc($bookings) ) {
+        $b = array(
+            "period" => $row["period"],
+            "day_num" => $row["day_num"],
+            "room" => $row["room"],
+            "classe" => $row["classe"],
         );
 
-        array_push( $response["agendamentos"], $agendamento);
+        array_push( $response["data"], $b);
     }
     
 } else {
