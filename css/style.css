@@ -1,0 +1,88 @@
+body {
+    font-family: "PT Sans", sans-serif !important;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+
+    font-size: 0.8em;
+    line-height: 120%;
+}
+
+.tableContainer {
+    padding: 0.6em;
+}
+
+.collapsible {
+    background-color: #154678;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px 4px 4px 4px;
+
+    margin-bottom: 5px;
+
+    color: #fff;
+    cursor: pointer;
+    padding: 18px;
+    width: 60%;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+
+.active, .collapsible:hover {
+    background-color: #10355b;
+    color: white;
+}
+
+.content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+}
+
+table {
+    box-sizing: border-box;
+    width: 60%;
+}
+
+table, td, th {
+    border-collapse: collapse;
+    border-spacing: 0;
+    text-indent: initial;
+}
+
+tr th {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 10px;
+    background: #154676;
+    border-right: 1px solid #FFFFFF;
+    color: #FFFFFF;
+
+    font-size: 14px;
+    margin: 0;
+    
+    border: 1px solid #FFFFFF;
+}
+
+th {
+    padding: 6px 10px 6px 10px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+td {
+    padding: 6px 2px 6px 2px;
+    word-break: break-word;
+    border: 1px solid #FFFFFF;
+    background-color: rgb(239, 239, 239);
+}
+
+@media only screen and (min-width: 320px) and (max-width: 768px) {
+    table {
+        width: auto !important;
+        max-width: 100% !important;
+    }
+}

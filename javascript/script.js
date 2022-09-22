@@ -1,7 +1,7 @@
-const locationUrl = "locations.php";
-const roomUrl = "rooms.php?location=";
-const periodsUrl = "periods.php";
-const bookingsUrl = "bookings.php?room=";
+const locationUrl = "../php/locations.php";
+const roomUrl = "../php/rooms.php?location=";
+const periodsUrl = "../php/periods.php";
+const bookingsUrl = "../php/bookings.php?room=";
 const diaSemana = ["","Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
 
 /* salvando os periodos existentes */
@@ -30,49 +30,67 @@ function getData(url, callback){
       .then(data => obj = data)
       .then(() => callback(obj.data));
 }
-  
+
 function displayLocations(locations) {
+    const div = document.getElementById("rooms");
+
     for (let i in locations) {
-        l = locations[i];
+        const l = locations[i];
 
-        const div = document.createElement("div");
-        div.id = l;
+        const container = document.createElement("div");
+        container.classList = "roomContainer";
 
-        const p = document.createElement("p");
-        p.textContent = l;
-        p.addEventListener("click", function() {
-            getData(roomUrl+p.textContent, loadTables)
+        //criando o botao
+        const b = document.createElement("button");
+        b.textContent = l;
+        b.classList = "collapsible";
+        b.id = l;
+
+        b.addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
         });
-        const divTables = document.createElement("div");
-        divTables.id = l + "-tables";
-        divTables.className = "tableContainer";
 
-        div.appendChild(p);
-        div.append(divTables);
-        body.appendChild(div);
+        //exibindo a checkbox
+        container.appendChild(b);
+        div.appendChild(container);
+
+        getData(roomUrl+l, loadTables);
+
     }
 }
 
 function loadTables(data) {
     const location = data[0];
-    const divParent = document.getElementById(location+"-tables");
+    const b = document.getElementById(location);
+
+    const divContent = document.createElement("div");
+    divContent.id = "container-" + location;
+    divContent.classList = "tableContainer";
 
     for(let i=1; i < data.length; i++) {
         const room = data[i];
 
         if (document.getElementById(room) == null) {
-            let div = document.createElement("div");
-            div.id = room;
 
-            createEmptyTable(div, room);
-            getData(bookingsUrl+room+"&location="+location, populateTable);
             let p = document.createElement("p");
             p.textContent = room;
+            divContent.appendChild(p);
 
-            divParent.append(p);
-            divParent.appendChild(div);
+            createEmptyTable(divContent, room);
+            getData(bookingsUrl+room+"&location="+location, populateTable);
+
         }
     }
+
+    divContent.style.display = "none";
+
+    b.after(divContent);
 }
 
 function createEmptyTable(div, room) {
@@ -117,11 +135,10 @@ function createEmptyTable(div, room) {
 }
 
 function populateTable(data) {
-    console.log(data);
     for (let i in data) {
         let booking = data[i];
 
-        console.log(booking);
+        //console.log(booking);
 
         let id = booking.period+booking.day_num+booking.room;
 
