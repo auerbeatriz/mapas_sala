@@ -1,7 +1,9 @@
-const locationUrl = "../php/locations.php";
-const roomUrl = "../php/rooms.php?location=";
-const periodsUrl = "../php/periods.php";
-const bookingsUrl = "../php/bookings.php?room=";
+const locationUrl = "php/locations.php";
+const roomUrl = "php/rooms.php?location=";
+const periodsUrl = "php/periods.php";
+const bookingsUrl = "php/bookings.php?room=";
+const bookingsNotesUrl = "php/bookingsnotes.php";
+const classUrl = "php/classbooking.php?class=";
 const diaSemana = ["","Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
 
 /* salvando os periodos existentes */
@@ -114,6 +116,7 @@ function createEmptyTable(div, room) {
         //cria os campos de horario da tabela
         let tr = document.createElement('tr');
         let td = document.createElement('td');
+        td.classList = "period";
         td.textContent = periods[i];
         tr.appendChild(td);
 
@@ -145,6 +148,107 @@ function populateTable(data) {
         if (document.getElementById(id) != null) {
             document.getElementById(id).textContent = booking.classe;
         }
+    }
+    
+}
+
+function displayOptions(classes) {
+    const select = document.querySelector("select");
+
+    classes.forEach(element => {
+        const op = document.createElement("option");
+        op.id = element;
+        op.value = element;
+        op.textContent = element;
+
+        select.appendChild(op);
+    });
+}
+
+function displayClasses() {
+    const select = document.querySelector('[name="notes"]');
+    const op = select.options[select.selectedIndex].value;
+
+    getData(classUrl+op, loadClasses);
+    
+}
+
+
+function loadClasses(data) {
+    // dados importantes para construir a estrutura da tabela
+    const op = data[0]["classe"];
+    const days = data[data.length - 2];
+    const periodos = data[data.length -1];
+    let tds = new Object();
+
+    // caso tenha uma tabela de outra classe, exclua
+    const div = document.getElementById("search-table");
+
+    cleanSearch();
+
+    // nome da materia
+    const p = document.createElement("p");
+    p.id = "p-search";
+    p.textContent = op;
+    div.appendChild(p);
+
+    // constroi a nova tabela
+    const table = document.createElement("table");
+    table.id = "table-search";
+
+    // header da tabela
+    let tr = document.createElement('tr');
+    let th = document.createElement('th');
+    tr.append(th);
+
+    for (let i in days) {
+        th = document.createElement('th');
+        th.textContent = diaSemana[days[i]];
+
+        tr.appendChild(th);
+    }
+
+    table.appendChild(tr);
+
+    for (i in periodos) {
+        tr = document.createElement("tr");
+        let td = document.createElement("td");
+        td.classList = "period";
+        td.textContent = periodos[i];
+
+        tr.appendChild(td);
+
+        for (let j in days) {
+            td = document.createElement("td");
+            tds[periodos[i]+days[j]] = td;
+
+            tr.appendChild(td);
+        }
+
+        table.appendChild(tr);
+    }
+
+    for (i=0; i < data.length - 2; i++) {
+        td = tds[(data[i].period+data[i].day_num)];
+
+        if (td.textContent == "") {
+            td.textContent = data[i].room + data[i].location;
+        } else {
+            td.appendChild(document.createElement("br"));
+            td.appendChild(document.createTextNode(data[i].room + data[i].location));
+        }
+        
+    }
+
+    div.appendChild(table);
+    
+}
+
+function cleanSearch() {
+
+    if (document.getElementById("search-table").childElementCount > 0) {
+        document.getElementById("table-search").remove();
+        document.getElementById("p-search").remove();
     }
     
 }

@@ -4,12 +4,12 @@
 ao banco de dados */
 
 class POST {
-
     private $conn;
 
     //controla a conexão com o banco
     public function __construct($db){
 		$this->conn = $db;
+        
 	}
 
     //consulta todos os agendamentos do banco
@@ -61,7 +61,65 @@ class POST {
         return $result;
     }
 
+    public function getClasses() {
+        $query = "SELECT notes FROM bookings
+                    WHERE week_id = 7
+                    GROUP BY notes
+                    ORDER BY notes ASC";
+        
+        $result = mysqli_query($this->conn, $query);
 
+        return $result;
+    }
+
+    public function getClassBooking($class) {
+        $query = "SELECT              
+                    periods.name as period, 
+                    bookings.day_num, 
+                    bookings.notes as classe,
+                    rooms.name as room,
+                    rooms.location as location
+                FROM bookings
+                INNER JOIN periods ON periods.period_id = bookings.period_id
+                INNER JOIN rooms ON rooms.room_id = bookings.room_id
+                WHERE bookings.week_id = 7 AND bookings.notes LIKE '%$class%'
+                ORDER BY periods.name ASC;";
+        
+        $result = mysqli_query($this->conn, $query);
+
+        return $result;
+    }
+
+    public function getClassDays($class) {
+        $query = "SELECT              
+                    bookings.day_num 
+                FROM bookings
+                INNER JOIN periods ON periods.period_id = bookings.period_id
+                INNER JOIN rooms ON rooms.room_id = bookings.room_id
+                WHERE bookings.week_id = 7 AND bookings.notes LIKE '%$class%'
+                GROUP BY bookings.day_num
+                ORDER BY periods.name ASC;";
+
+        $result = mysqli_query($this->conn, $query);
+
+        return $result;
+    }
+
+    public function getClassPeriods($class) {
+        $query = $query = "SELECT              
+                        periods.name as period
+                    FROM bookings
+                    INNER JOIN periods ON periods.period_id = bookings.period_id
+                    INNER JOIN rooms ON rooms.room_id = bookings.room_id
+                    WHERE bookings.week_id = 7 AND bookings.notes LIKE '%$class%'
+                    GROUP BY periods.name
+                    ORDER BY periods.name ASC;";
+
+        $result = mysqli_query($this->conn, $query);
+
+        return $result;
+
+    }
 }
 
 ?>
