@@ -24,6 +24,7 @@ const getPeriods = async () => {
 
 const body = document.querySelector("body");
 
+/* funcao responsavel por obter os dados do servidor */
 function getData(url, callback){
     var obj;
 
@@ -33,8 +34,11 @@ function getData(url, callback){
       .then(() => callback(obj.data));
 }
 
+/*  primeira funcao chamada em body.onload
+    essa funcao recebe uma lista de strings com o nome das localizacoes do car
+    e controi os elementos collapsable */
 function displayLocations(locations) {
-    const div = document.getElementById("rooms");
+    const div = document.getElementById("div-rooms");
 
     for (let i in locations) {
         const l = locations[i];
@@ -152,6 +156,8 @@ function populateTable(data) {
     
 }
 
+
+
 function displayOptions(classes) {
     const select = document.querySelector("select");
 
@@ -173,7 +179,6 @@ function displayClasses() {
     
 }
 
-
 function loadClasses(data) {
     // dados importantes para construir a estrutura da tabela
     const op = data[0]["classe"];
@@ -182,7 +187,7 @@ function loadClasses(data) {
     let tds = new Object();
 
     // caso tenha uma tabela de outra classe, exclua
-    const div = document.getElementById("search-table");
+    const div = document.getElementById("div-search-result");
 
     cleanSearch();
 
@@ -246,7 +251,7 @@ function loadClasses(data) {
 
 function cleanSearch() {
 
-    if (document.getElementById("search-table").childElementCount > 0) {
+    if (document.getElementById("div-search-result").childElementCount > 0) {
         document.getElementById("table-search").remove();
         document.getElementById("p-search").remove();
     }

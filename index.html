@@ -14,29 +14,29 @@
 
     <div id="pesquisa">
 
-        <div id="container-row">
+        <div class="container-row">
 
-            <form id="search" action="javascript:" onsubmit="displayClasses()">
-                <select name="notes">
-                </select>
+            <form action="javascript:" onsubmit="displayClasses()">
+
+                <select name="notes"></select>
 
                 <input type="submit" name="pesquisar" value="Pesquisar" class="btn-search">
+
             </form>
+
             <button onclick="cleanSearch()" class="btn-search" id="clean">Limpar</button>
             
         </div>
 
-        <div id="search-table"></div>
+        <div id="div-search-result"></div>
 
     </div>
 
     <br>
 
-    <div id="container">
+    <div class="container-column">
 
-        <div id="rooms"></div>
-
-        <div id="displayTables"></div>
+        <div id="div-rooms"></div>
 
     </div>
 
