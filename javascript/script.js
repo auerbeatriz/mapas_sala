@@ -52,6 +52,7 @@ function displayLocations(locations) {
         b.classList = "collapsible";
         b.id = l;
 
+        // config comportamento collapsable
         b.addEventListener("click", function() {
             this.classList.toggle("active");
             var content = this.nextElementSibling;
@@ -62,15 +63,17 @@ function displayLocations(locations) {
             }
         });
 
-        //exibindo a checkbox
+        //exibindo o botao collapsable
         container.appendChild(b);
         div.appendChild(container);
 
+        // chama a funcao para construir as tabelas
         getData(roomUrl+l, loadTables);
 
     }
 }
 
+/* funcao chamada apos os botoes collapsable serem criados para montar as tabelas */
 function loadTables(data) {
     const location = data[0];
     const b = document.getElementById(location);
@@ -88,6 +91,7 @@ function loadTables(data) {
             p.textContent = room;
             divContent.appendChild(p);
 
+            //efetivamente cria uma tabela que sera populada com os dados da sala especifica
             createEmptyTable(divContent, room);
             getData(bookingsUrl+room+"&location="+location, populateTable);
 
@@ -99,11 +103,15 @@ function loadTables(data) {
     b.after(divContent);
 }
 
+/*  Essa funcao eh responsavel por criar a estrutura da tabela que sera preenchida com os agendamentos
+ *  A ideia principal eh que cada <td> tera um id periodo+diasemana
+ *  O agengdamento que tiver periodo+diasemana da sala recebida sera encaixada naquela <td>
+ *  Isso funciona pois nao ha como duas classes agendarem a mesma sala no mesmo horario do mesmo dia */
 function createEmptyTable(div, room) {
     const table = document.createElement("table");
     table.id = "table-"+room;
 
-    /*header da tabela */
+    //header da tabela
     let tr = document.createElement('tr');
 
     for (let i in diaSemana) {
@@ -115,7 +123,7 @@ function createEmptyTable(div, room) {
 
     table.appendChild(tr);
 
-    /*celulas das tabelas */
+    //celulas das tabelas
     for (let i in periods) {
         //cria os campos de horario da tabela
         let tr = document.createElement('tr');
@@ -125,7 +133,6 @@ function createEmptyTable(div, room) {
         tr.appendChild(td);
 
         //cria as celulas que serao populadas com os dados posteriormente,
-        //com o id de periodo+diasemana
         d = 1;
         while (d < 6) {
             let td = document.createElement('td');
@@ -134,13 +141,14 @@ function createEmptyTable(div, room) {
             d++;
         }
 
-        //adiciona a linha na tabela
         table.appendChild(tr);
     }
 
     div.appendChild(table);
 }
 
+/* Essa funcao eh chamada para alocar os agendamentos de uma sala especifica nas <td>s correspondentes
+ * da tabela criada anteriormente */
 function populateTable(data) {
     for (let i in data) {
         let booking = data[i];
@@ -157,7 +165,7 @@ function populateTable(data) {
 }
 
 
-
+/* Essa funcao eh chamada em body.onload para exibir todas as classes possiveis para consulta */
 function displayOptions(classes) {
     const select = document.querySelector("select");
 
@@ -171,6 +179,8 @@ function displayOptions(classes) {
     });
 }
 
+/* Essa funcao eh chamada quando o botao "pesquisar" eh selecionado
+ * Pega o valor que foi selecionado e chama a funcao para carregar a tabela de agendamentos da classe */
 function displayClasses() {
     const select = document.querySelector('[name="notes"]');
     const op = select.options[select.selectedIndex].value;
@@ -179,6 +189,7 @@ function displayClasses() {
     
 }
 
+/* Funcao responsavel por carregar os agendamentos de uma classe especifica */
 function loadClasses(data) {
     // dados importantes para construir a estrutura da tabela
     const op = data[0]["classe"];
@@ -186,9 +197,9 @@ function loadClasses(data) {
     const periodos = data[data.length -1];
     let tds = new Object();
 
-    // caso tenha uma tabela de outra classe, exclua
     const div = document.getElementById("div-search-result");
 
+    // caso tenha uma tabela de outra classe, exclua
     cleanSearch();
 
     // nome da materia
@@ -215,6 +226,7 @@ function loadClasses(data) {
 
     table.appendChild(tr);
 
+    // body da tabela
     for (i in periodos) {
         tr = document.createElement("tr");
         let td = document.createElement("td");
@@ -225,6 +237,11 @@ function loadClasses(data) {
 
         for (let j in days) {
             td = document.createElement("td");
+
+            // adiciona a <td> criada dentro de um obj na chave periodo+diasemana
+            // isso eh usado pois a pagina ainda nao foi renderizada com a <td>
+            // logo ela sera inacessavel nessa rota
+            // mas nesse obj ela podera ser acessada e modificada antes de ser renderizada
             tds[periodos[i]+days[j]] = td;
 
             tr.appendChild(td);
@@ -233,14 +250,15 @@ function loadClasses(data) {
         table.appendChild(tr);
     }
 
+    // efetivamente carrega os dados do agendamento, tomando o cuidado para salas que foram agendadas no mesmo dia e horario
     for (i=0; i < data.length - 2; i++) {
         td = tds[(data[i].period+data[i].day_num)];
 
         if (td.textContent == "") {
-            td.textContent = data[i].room + data[i].location;
+            td.textContent = data[i].room + " - " + data[i].location;
         } else {
             td.appendChild(document.createElement("br"));
-            td.appendChild(document.createTextNode(data[i].room + data[i].location));
+            td.appendChild(document.createTextNode(data[i].room + " - " + data[i].location));
         }
         
     }
@@ -249,6 +267,8 @@ function loadClasses(data) {
     
 }
 
+/*  Essa funcao eh chamada quando o botao "limpar" do formulario eh acionado
+ *  remove a tabela exibida na pesquisa, se ela foi criada */
 function cleanSearch() {
 
     if (document.getElementById("div-search-result").childElementCount > 0) {
