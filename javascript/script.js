@@ -36,7 +36,7 @@ function getData(url, callback){
 
 /*  primeira funcao chamada em body.onload
     essa funcao recebe uma lista de strings com o nome das localizacoes do car
-    e controi os elementos collapsable */
+    e constroi os elementos collapsable */
 function displayLocations(locations) {
     const div = document.getElementById("div-rooms");
 
@@ -82,17 +82,30 @@ function loadTables(data) {
     divContent.id = "container-" + location;
     divContent.classList = "tableContainer";
 
+    
     for(let i=1; i < data.length; i++) {
         const room = data[i];
 
         if (document.getElementById(room) == null) {
 
+            /* esse div extra foi criado para ser o div "impresso" no pdf de exportação
+               cada tabela está dentro de seu container para ser exportada isoladamente */
+            let divTable = document.createElement("div");
+            divTable.id = "table-container-" + location;
+            divContent.appendChild(divTable);
+
             let p = document.createElement("p");
             p.textContent = room;
-            divContent.appendChild(p);
+            divTable.appendChild(p);
+
+            // botao para criar e exportar o pdf da tabela
+            let button = document.createElement("button");
+            button.textContent = "exportar";
+            button.addEventListener("click", function() { exportPdf("table-container-" + location) });
+            divTable.appendChild(button);
 
             //efetivamente cria uma tabela que sera populada com os dados da sala especifica
-            createEmptyTable(divContent, room);
+            createEmptyTable(divTable, room);
             getData(bookingsUrl+room+"&location="+location, populateTable);
 
         }
