@@ -6,6 +6,8 @@ const bookingsNotesUrl = "php/bookingsnotes.php";
 const classUrl = "php/classbooking.php?class=";
 const diaSemana = ["","Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
 
+let table_ids = []
+
 /* salvando os periodos existentes */
 let periods;
 
@@ -36,7 +38,7 @@ function getData(url, callback){
 
 /*  primeira funcao chamada em body.onload
     essa funcao recebe uma lista de strings com o nome das localizacoes do car
-    e controi os elementos collapsable */
+    e constroi os elementos collapsable */
 function displayLocations(locations) {
     const div = document.getElementById("div-rooms");
 
@@ -81,18 +83,35 @@ function loadTables(data) {
     const divContent = document.createElement("div");
     divContent.id = "container-" + location;
     divContent.classList = "tableContainer";
-
+    
     for(let i=1; i < data.length; i++) {
         const room = data[i];
 
         if (document.getElementById(room) == null) {
 
+            /* esse div extra foi criado para ser o div "impresso" no pdf de exportação
+               cada tabela está dentro de seu container para ser exportada isoladamente */
+            let divTable = document.createElement("div");
+            divTable.id = "table-container-" + location + i;
+
+            // coloca o id do conteudo da tabela para ser exportado
+            table_ids.push(divTable.id);
+
+            // console.log(divTable);
+            divContent.appendChild(divTable);
+
             let p = document.createElement("p");
             p.textContent = room;
-            divContent.appendChild(p);
+            divTable.appendChild(p);
+
+            // botao para criar e exportar o pdf da tabela
+            let button = document.createElement("button");
+            button.textContent = "exportar";
+            button.addEventListener("click", function() { exportPdf(divTable.id) });
+            divTable.appendChild(button);
 
             //efetivamente cria uma tabela que sera populada com os dados da sala especifica
-            createEmptyTable(divContent, room);
+            createEmptyTable(divTable, room);
             getData(bookingsUrl+room+"&location="+location, populateTable);
 
         }
@@ -202,6 +221,8 @@ function loadClasses(data) {
     // caso tenha uma tabela de outra classe, exclua
     cleanSearch();
 
+    document.querySelector("#single-export").style.display = "block";
+
     // nome da materia
     const p = document.createElement("p");
     p.id = "p-search";
@@ -272,6 +293,7 @@ function loadClasses(data) {
 function cleanSearch() {
 
     if (document.getElementById("div-search-result").childElementCount > 0) {
+        document.querySelector("#single-export").style.display = "none";
         document.getElementById("table-search").remove();
         document.getElementById("p-search").remove();
     }

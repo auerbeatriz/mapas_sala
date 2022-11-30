@@ -20,11 +20,13 @@
 
                 <select name="notes"></select>
 
-                <input type="submit" name="pesquisar" value="Pesquisar" class="btn-search">
+                <input type="submit" name="pesquisar" value="Pesquisar" class="btn">
 
             </form>
 
-            <button onclick="cleanSearch()" class="btn-search" id="clean">Limpar</button>
+            <button onclick="cleanSearch()" class="btn" id="clean">Limpar</button>
+            <button onclick="exportAll2pdf()" class="btn btn-export-all" id="multiple-export">Exportar todos para PDF</button>
+            <button onclick="exportPdf('div-search-result')" class="btn btn-export" id="single-export">Exportar PDF</button>
             
         </div>
 
@@ -42,6 +44,15 @@
 
 </body>
 
+<!-- usando jsPDF para criar pdfs -->
+<script src="javascript/jspdf.min.js"></script>
+
+<!-- usando plugin autotable -->
+<script src="https://unpkg.com/jspdf-autotable@3.5.22/dist/jspdf.plugin.autotable.js"></script>
+
+
+<!-- nossos scritps -->
 <script src="javascript/script.js"></script>
+<script src="javascript/export_pdf.js"></script>
 
 </html>
