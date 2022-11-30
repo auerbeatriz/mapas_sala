@@ -6,6 +6,8 @@ const bookingsNotesUrl = "php/bookingsnotes.php";
 const classUrl = "php/classbooking.php?class=";
 const diaSemana = ["","Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
 
+let table_ids = []
+
 /* salvando os periodos existentes */
 let periods;
 
@@ -81,7 +83,6 @@ function loadTables(data) {
     const divContent = document.createElement("div");
     divContent.id = "container-" + location;
     divContent.classList = "tableContainer";
-
     
     for(let i=1; i < data.length; i++) {
         const room = data[i];
@@ -91,7 +92,12 @@ function loadTables(data) {
             /* esse div extra foi criado para ser o div "impresso" no pdf de exportação
                cada tabela está dentro de seu container para ser exportada isoladamente */
             let divTable = document.createElement("div");
-            divTable.id = "table-container-" + location;
+            divTable.id = "table-container-" + location + i;
+
+            // coloca o id do conteudo da tabela para ser exportado
+            table_ids.push(divTable.id);
+
+            // console.log(divTable);
             divContent.appendChild(divTable);
 
             let p = document.createElement("p");
@@ -101,7 +107,7 @@ function loadTables(data) {
             // botao para criar e exportar o pdf da tabela
             let button = document.createElement("button");
             button.textContent = "exportar";
-            button.addEventListener("click", function() { exportPdf("table-container-" + location) });
+            button.addEventListener("click", function() { exportPdf(divTable.id) });
             divTable.appendChild(button);
 
             //efetivamente cria uma tabela que sera populada com os dados da sala especifica
@@ -215,6 +221,8 @@ function loadClasses(data) {
     // caso tenha uma tabela de outra classe, exclua
     cleanSearch();
 
+    document.querySelector("#single-export").style.display = "block";
+
     // nome da materia
     const p = document.createElement("p");
     p.id = "p-search";
@@ -285,6 +293,7 @@ function loadClasses(data) {
 function cleanSearch() {
 
     if (document.getElementById("div-search-result").childElementCount > 0) {
+        document.querySelector("#single-export").style.display = "none";
         document.getElementById("table-search").remove();
         document.getElementById("p-search").remove();
     }
