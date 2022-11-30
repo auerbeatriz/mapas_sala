@@ -106,7 +106,11 @@ function loadTables(data) {
 
             // botao para criar e exportar o pdf da tabela
             let button = document.createElement("button");
-            button.textContent = "exportar";
+            button.textContent = "Exportar PDF";
+            button.classList = "btn";
+            button.style.display = "block";
+
+
             button.addEventListener("click", function() { exportPdf(divTable.id) });
             divTable.appendChild(button);
 
