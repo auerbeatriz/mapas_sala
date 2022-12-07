@@ -1,0 +1,29 @@
+** A maior parte dos elementos na página são gerados dinamicamente utilizando javascript
+
+** Todo código javascript desenvolvido pelo Centro de Artes está noa arquivo script.js
+   Os outros arquivos na pasta são extensões para gerar e exportar PDFs ( jsPDF )
+
+** 
+EXPLICANDO A LÓGICA DO CÓDIGO
+
+1. A primeira coisa que o código faz assim que a página é carregada é obter os períodos de aulas ( horário em que são realizadas )
+   Os períodos são armazenados em uma variável global pois são utilizados para construir todas as tabelas do site, e seria muito custoso
+   requisitá-los todas as vezes em que fôssemos montar uma tabela.
+
+2. As consultas ao servidor são feitas em javascript, utiliando o recurso FETCH. A chamada está dentro da função getData(), que recebe dois
+   parâmetros: 
+   URL: url da página php que fornece o JSON com a informação requerida
+   CALLBACK: nome da função chamada após a obtenção dos dados, que efetivamente irá construir os elementos
+
+3. A estrutura do botão collapsible é criada junto com as tabelas de cada prédio, um de cada vez.
+   A estrutura da tabela é criada antes da lotação de dados. A lotação de dados é feita usando os ids de localização, sala e periodo.
+   
+   Isso significa que uma tabela tem id: "table-" + sala
+   Cada célula de uma tabela tem id: periodo + sala
+
+   Ao obter os dados das aulas, essas informações, obtidas da query, são concatenadas e o nome da disciplina é alocada na célula correspondente
+
+4. A mesma lógica acima é usada para construir a tabela de uma disciplina específica
+
+5. A exportação de PDFs é feita utilizando a biblioteca jsPDF e extensão autotable. Se precisar modificar algo nessa parte, consulte a documentação
+   oficial deles.

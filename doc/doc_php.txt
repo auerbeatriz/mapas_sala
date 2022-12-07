@@ -1,0 +1,7 @@
+** As configurações de conexão com o banco de dados está no arquivo config.php
+
+** Toda a comunicação com o banco de dados e querys devem ser feitas como métodos da classe POST ( post.php )
+
+** Todos os arquivos de requisição de dados têm a mesma estrutua
+
+** Os dados obtidos pelo servidor são montados em formato JSON

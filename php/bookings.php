@@ -16,9 +16,11 @@ $location = $_GET["location"];
 //array responsavel pela resposta Json
 $response = array();
 
+
 //obtendo os dados do banco
 $bookings = $post->getBookings($room, $location);
 $numRows =  mysqli_num_rows( $bookings );
+
 
 if( $numRows > 0) {
     /*se a consulta aconteceu*/
